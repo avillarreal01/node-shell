@@ -1,16 +1,15 @@
+var commands = require('./commands');
+
 process.stdout.write('prompt > ');
 
 process.stdin.on('data', function (data) {
-    var cmd = data.toString().trim();
-    if (cmd === 'pwd') {
-        process.stdout.write(process.cwd());
-    } else if (cmd === 'date') {
-        var date = new Date();
-        console.log(date.toUTCString());
-        // process.stdout.write(date);
+    var inputArr = data.toString().trim().split(' ');
+    var cmd = inputArr[0];
+    var arg = inputArr.slice(1).join(' ');
+    if (commands[cmd]) {
+        commands[cmd](arg);
     } else {
         process.stdout.write('You typed: ' + cmd);
+        process.stdout.write('\nprompt > ');
     }
-   
-    process.stdout.write('\nprompt > ');
 });
