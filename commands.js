@@ -2,69 +2,61 @@ var fs = require('fs');
 var request = require('request');
 
 module.exports = {
-    pwd: function() {
-        process.stdout.write(process.cwd());
-        process.stdout.write('\nprompt > ');
+    pwd: function(arg, done) {
+        done(process.cwd());
     },
-    date: function() {
+    date: function(arg, done) {
         var date = new Date();
-        process.stdout.write(date.toUTCString());
-        process.stdout.write('\nprompt > ');
+        done(date.toUTCString());
     },
-    ls: function() {
+    ls: function(arg, done) {
+        var output = '';
         fs.readdir('.', function(err, files) {
             if (err) throw err;
             files.forEach(function(file) {
-              process.stdout.write(file.toString() + '\n');
+              output += file.toString() + '\n';
             });
-            process.stdout.write('prompt > ');
+            done(output);
           });
     },
-    echo: function(arg) {
-        process.stdout.write(arg);
-        process.stdout.write('\nprompt > ');
+    echo: function(arg, done) {
+        done(arg);
     },
-    cat: function(arg) {
+    cat: function(arg, done) {
         fs.readFile(arg, function(err, data) {
             if (err) throw err;
-            process.stdout.write(data.toString() + '\n');
-            process.stdout.write('prompt > ');
+            done(data.toString());
           });
     },
-    head: function(arg) {
-        fs.readFile(arg, function(err, data) {
-            if (err) throw err;
-            var linesArr = data.toString().split('\n');
-            linesArr.length = 5;
-            process.stdout.write(linesArr.join('\n') + '\n');
-            process.stdout.write('prompt > ');
-          });
-    },
-    tail: function(arg) {
+    head: function(arg, done) {
         fs.readFile(arg, function(err, data) {
             if (err) throw err;
             var linesArr = data.toString().split('\n');
-            process.stdout.write(linesArr.slice(-5).join('\n') + '\n');
-            process.stdout.write('prompt > ');
+            done(linesArr.slice(0, 5).join('\n'));
           });
     },
-    sort: function(arg) {
+    tail: function(arg, done) {
         fs.readFile(arg, function(err, data) {
             if (err) throw err;
             var linesArr = data.toString().split('\n');
-            process.stdout.write(linesArr.sort().join('\n') + '\n');
-            process.stdout.write('prompt > ');
+            done(linesArr.slice(-5).join('\n'));
           });
     },
-    wc: function(arg) {
+    sort: function(arg, done) {
         fs.readFile(arg, function(err, data) {
             if (err) throw err;
             var linesArr = data.toString().split('\n');
-            process.stdout.write('Total Lines: ' + linesArr.length + '\n');
-            process.stdout.write('prompt > ');
+            done(linesArr.sort().join('\n'));
           });
     },
-    uniq: function(arg) {
+    wc: function(arg, done) {
+        fs.readFile(arg, function(err, data) {
+            if (err) throw err;
+            var linesArr = data.toString().split('\n');
+            done('Total Lines: ' + linesArr.length);
+          });
+    },
+    uniq: function(arg, done) {
         fs.readFile(arg, function(err, data) {
             if (err) throw err;
             var linesArr = data.toString().split('\n');
@@ -73,8 +65,7 @@ module.exports = {
                     linesArr.splice(i, 1);
                 }
             }
-            process.stdout.write(linesArr.join('\n') + '\n');
-            process.stdout.write('prompt > ');
+            done(linesArr.join('\n'));
           });
     },
 };
