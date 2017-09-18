@@ -1,15 +1,17 @@
 var fs = require('fs');
 var request = require('request');
 
+///
+
 module.exports = {
-    pwd: function(arg, done) {
+    pwd: function(stdin, arg, done) {
         done(process.cwd());
     },
-    date: function(arg, done) {
+    date: function(stdin, arg, done) {
         var date = new Date();
         done(date.toUTCString());
     },
-    ls: function(arg, done) {
+    ls: function(stdin, arg, done) {
         var output = '';
         fs.readdir('.', function(err, files) {
             if (err) throw err;
@@ -19,44 +21,44 @@ module.exports = {
             done(output);
           });
     },
-    echo: function(arg, done) {
+    echo: function(stdin, arg, done) {
         done(arg);
     },
-    cat: function(arg, done) {
+    cat: function(stdin, arg, done) {
         fs.readFile(arg, function(err, data) {
             if (err) throw err;
             done(data.toString());
           });
     },
-    head: function(arg, done) {
+    head: function(stdin, arg, done) {
         fs.readFile(arg, function(err, data) {
             if (err) throw err;
             var linesArr = data.toString().split('\n');
             done(linesArr.slice(0, 5).join('\n'));
           });
     },
-    tail: function(arg, done) {
+    tail: function(stdin, arg, done) {
         fs.readFile(arg, function(err, data) {
             if (err) throw err;
             var linesArr = data.toString().split('\n');
             done(linesArr.slice(-5).join('\n'));
           });
     },
-    sort: function(arg, done) {
+    sort: function(stdin, arg, done) {
         fs.readFile(arg, function(err, data) {
             if (err) throw err;
             var linesArr = data.toString().split('\n');
             done(linesArr.sort().join('\n'));
           });
     },
-    wc: function(arg, done) {
+    wc: function(stdin, arg, done) {
         fs.readFile(arg, function(err, data) {
             if (err) throw err;
             var linesArr = data.toString().split('\n');
             done('Total Lines: ' + linesArr.length);
           });
     },
-    uniq: function(arg, done) {
+    uniq: function(stdin, arg, done) {
         fs.readFile(arg, function(err, data) {
             if (err) throw err;
             var linesArr = data.toString().split('\n');
